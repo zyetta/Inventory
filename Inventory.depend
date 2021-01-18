@@ -1128,13 +1128,14 @@
 	"wx/window.h"
 	"wx/containr.h"
 
-1611007105 source:/mnt/internal/Documents/Development/C++/Inventory/InventoryMain.cpp
+1611011412 source:/mnt/internal/Documents/Development/C++/Inventory/InventoryMain.cpp
 	<wx/msgdlg.h>
 	<iostream>
 	<wx/intl.h>
 	<wx/string.h>
 	"InventoryMain.h"
 	"sqlite3.h"
+	<string>
 
 1610865652 /usr/local/include/wx-3.1/wx/msgdlg.h
 	"wx/defs.h"
