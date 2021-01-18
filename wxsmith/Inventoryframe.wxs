@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wxsmith>
+	<object class="wxFrame" name="InventoryFrame">
+		<size>1175,435</size>
+		<id_arg>0</id_arg>
+		<object class="wxNotebook" name="ID_NOTEBOOK1" variable="Notebook1" member="yes">
+			<pos>0,0</pos>
+			<size>950,540</size>
+			<object class="notebookpage">
+				<object class="wxPanel" name="ID_PANEL3" variable="Panel3" member="yes">
+					<pos>1,70</pos>
+					<size>1173,392</size>
+					<object class="wxStaticBox" name="ID_STATICBOX3" variable="StaticBox1" member="yes">
+						<pos>600,232</pos>
+						<size>560,128</size>
+					</object>
+					<object class="wxStaticBox" name="ID_STATICBOX2" variable="StaticBox_ItemInfo" member="yes">
+						<label>ITEM INFORMATION</label>
+						<pos>16,16</pos>
+						<size>560,216</size>
+						<style>wxALWAYS_SHOW_SB</style>
+					</object>
+					<object class="wxStaticBox" name="ID_STATICBOX1" variable="StaticBox_VendorInfo" member="yes">
+						<label>VENDOR INFORMATION</label>
+						<pos>600,16</pos>
+						<size>560,216</size>
+					</object>
+					<object class="wxButton" name="ID_BUTTON1" variable="AddEntry" member="yes">
+						<label>ADD ENTRY</label>
+						<pos>16,280</pos>
+						<handler function="OnAddEntryClick" entry="EVT_BUTTON" />
+					</object>
+					<object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText_ItemName" member="yes">
+						<label>ITEM NAME</label>
+						<pos>32,48</pos>
+					</object>
+					<object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="TextCtrl_ItemName" member="yes">
+						<pos>184,40</pos>
+						<size>376,34</size>
+					</object>
+					<object class="wxStaticText" name="ID_STATICTEXT2" variable="StaticText_ItemDesc" member="yes">
+						<label>DESCRIPTION</label>
+						<pos>32,96</pos>
+					</object>
+					<object class="wxStaticText" name="ID_STATICTEXT3" variable="StaticText_Manufacturer" member="yes">
+						<label>MANUFACTURER</label>
+						<pos>32,144</pos>
+					</object>
+					<object class="wxTextCtrl" name="ID_TEXTCTRL2" variable="TextCtrl_Description" member="yes">
+						<pos>184,88</pos>
+						<size>376,34</size>
+					</object>
+					<object class="wxTextCtrl" name="ID_TEXTCTRL3" variable="TextCtrl_VendorURL" member="yes">
+						<pos>768,184</pos>
+						<size>376,34</size>
+					</object>
+					<object class="wxTextCtrl" name="ID_TEXTCTRL5" variable="TextCtrl_VendorCost" member="yes">
+						<pos>768,136</pos>
+						<size>376,34</size>
+					</object>
+					<object class="wxStaticText" name="ID_STATICTEXT4" variable="StaticText4" member="yes">
+						<label>VENDOR ITEM NO.</label>
+						<pos>616,96</pos>
+					</object>
+					<object class="wxStaticText" name="ID_STATICTEXT5" variable="StaticText5" member="yes">
+						<label>VENDOR NAME</label>
+						<pos>616,48</pos>
+					</object>
+					<object class="wxTextCtrl" name="ID_TEXTCTRL6" variable="TextCtrl_VendorName" member="yes">
+						<pos>768,40</pos>
+						<size>376,34</size>
+					</object>
+					<object class="wxTextCtrl" name="ID_TEXTCTRL7" variable="TextCtrl_VenderNumber" member="yes">
+						<pos>768,88</pos>
+						<size>376,34</size>
+					</object>
+					<object class="wxStaticText" name="ID_STATICTEXT6" variable="StaticText6" member="yes">
+						<label>VENDOR UNIT COST</label>
+						<pos>616,144</pos>
+					</object>
+					<object class="wxStaticText" name="ID_STATICTEXT7" variable="StaticText7" member="yes">
+						<label>VENDOR WEB URL</label>
+						<pos>616,192</pos>
+					</object>
+					<object class="wxTextCtrl" name="ID_TEXTCTRL8" variable="TextCtrl_Manufacturer" member="yes">
+						<pos>184,136</pos>
+						<size>376,34</size>
+					</object>
+					<object class="wxStaticText" name="ID_STATICTEXT9" variable="StaticText9" member="yes">
+						<label>CATEGORY</label>
+						<pos>32,192</pos>
+					</object>
+					<object class="wxStaticText" name="ID_STATICTEXT10" variable="StaticText10" member="yes">
+						<label>QUANTITY</label>
+						<pos>616,264</pos>
+					</object>
+					<object class="wxSpinCtrl" name="ID_SPINCTRL1" variable="SpinCtrl_Quantity" member="yes">
+						<value>1</value>
+						<max>100000</max>
+						<pos>768,256</pos>
+						<size>376,34</size>
+					</object>
+					<object class="wxStaticText" name="ID_STATICTEXT8" variable="StaticText_Notification" member="yes">
+						<label></label>
+						<pos>184,288</pos>
+					</object>
+					<object class="wxComboBox" name="ID_COMBOBOX1" variable="ComboBox_Category" member="yes">
+						<pos>184,184</pos>
+						<size>376,34</size>
+					</object>
+					<object class="wxStaticText" name="ID_STATICTEXT11" variable="StaticText1" member="yes">
+						<label>DATASHEET</label>
+						<pos>616,312</pos>
+					</object>
+					<object class="wxButton" name="ID_BUTTON2" variable="Button_UploadDatasheet" member="yes">
+						<label>Find</label>
+						<pos>768,304</pos>
+						<handler function="OnButton_UploadDatasheetClick" entry="EVT_BUTTON" />
+					</object>
+					<object class="wxStaticText" name="ID_STATICTEXT12" variable="StaticText2" member="yes">
+						<label></label>
+						<pos>872,320</pos>
+					</object>
+				</object>
+				<label>ADD ITEMS</label>
+			</object>
+		</object>
+		<object class="wxMenuBar" variable="MenuBar1" member="no">
+			<object class="wxMenu" variable="Menu1" member="no">
+				<label>&amp;File</label>
+				<object class="wxMenuItem" name="idMenuQuit" variable="MenuItem1" member="no">
+					<label>Quit</label>
+					<accel>Alt-F4</accel>
+					<help>Quit the application</help>
+					<handler function="OnQuit" entry="EVT_MENU" />
+				</object>
+			</object>
+			<object class="wxMenu" variable="Menu2" member="no">
+				<label>Help</label>
+				<object class="wxMenuItem" name="idMenuAbout" variable="MenuItem2" member="no">
+					<label>About</label>
+					<accel>F1</accel>
+					<help>Show info about this application</help>
+					<handler function="OnAbout" entry="EVT_MENU" />
+				</object>
+			</object>
+		</object>
+		<object class="wxTimer" name="ID_TIMER1" variable="Timer1" member="yes">
+			<interval>1000</interval>
+			<oneshot>1</oneshot>
+			<handler function="OnTimer1Trigger" entry="EVT_TIMER" />
+		</object>
+		<object class="wxFileDialog" variable="FileDialog1" member="yes">
+			<message>Select file</message>
+			<default_dir>$USER</default_dir>
+		</object>
+	</object>
+</wxsmith>
