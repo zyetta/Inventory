@@ -17,6 +17,7 @@
 #include <wx/wxsqlite3.h>
 #include "InventoryMain.h"
 #include <string>
+#include <time.h>
 using namespace std;
 
 
@@ -82,6 +83,7 @@ const long InventoryFrame::ID_BUTTON2 = wxNewId();
 const long InventoryFrame::ID_STATICTEXT12 = wxNewId();
 const long InventoryFrame::ID_COMBOBOX2 = wxNewId();
 const long InventoryFrame::ID_COMBOBOX3 = wxNewId();
+const long InventoryFrame::ID_CHECKBOX1 = wxNewId();
 const long InventoryFrame::ID_PANEL3 = wxNewId();
 const long InventoryFrame::ID_NOTEBOOK1 = wxNewId();
 const long InventoryFrame::idMenuQuit = wxNewId();
@@ -136,10 +138,13 @@ InventoryFrame::InventoryFrame(wxWindow* parent,wxWindowID id)
     StaticText_Notification = new wxStaticText(Panel3, ID_STATICTEXT8, wxEmptyString, wxPoint(184,288), wxDefaultSize, 0, _T("ID_STATICTEXT8"));
     ComboBox_Category = new wxComboBox(Panel3, ID_COMBOBOX1, wxEmptyString, wxPoint(184,184), wxSize(376,34), 0, 0, 0, wxDefaultValidator, _T("ID_COMBOBOX1"));
     StaticText1 = new wxStaticText(Panel3, ID_STATICTEXT11, _("DATASHEET"), wxPoint(616,312), wxDefaultSize, 0, _T("ID_STATICTEXT11"));
-    Button_UploadDatasheet = new wxButton(Panel3, ID_BUTTON2, _("Find"), wxPoint(768,304), wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON2"));
-    StaticText2 = new wxStaticText(Panel3, ID_STATICTEXT12, wxEmptyString, wxPoint(872,320), wxDefaultSize, 0, _T("ID_STATICTEXT12"));
+    Button_UploadDatasheet = new wxButton(Panel3, ID_BUTTON2, _("Find"), wxPoint(808,304), wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON2"));
+    Button_UploadDatasheet->Disable();
+    StaticText2 = new wxStaticText(Panel3, ID_STATICTEXT12, wxEmptyString, wxPoint(912,312), wxSize(64,16), 0, _T("ID_STATICTEXT12"));
     ComboBox_Manufacturer = new wxComboBox(Panel3, ID_COMBOBOX2, wxEmptyString, wxPoint(184,136), wxSize(376,34), 0, 0, 0, wxDefaultValidator, _T("ID_COMBOBOX2"));
     ComboBox_VenderName = new wxComboBox(Panel3, ID_COMBOBOX3, wxEmptyString, wxPoint(768,40), wxSize(376,34), 0, 0, 0, wxDefaultValidator, _T("ID_COMBOBOX3"));
+    FileUploadCheck = new wxCheckBox(Panel3, ID_CHECKBOX1, wxEmptyString, wxPoint(768,312), wxSize(24,22), 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
+    FileUploadCheck->SetValue(false);
     Notebook1->AddPage(Panel3, _("ADD ITEMS"), false);
     MenuBar1 = new wxMenuBar();
     Menu1 = new wxMenu();
@@ -153,11 +158,12 @@ InventoryFrame::InventoryFrame(wxWindow* parent,wxWindowID id)
     SetMenuBar(MenuBar1);
     Timer1.SetOwner(this, ID_TIMER1);
     Timer1.Start(1000, true);
-    FileDialog1 = new wxFileDialog(this, _("Select file"), _("$USER"), wxEmptyString, wxFileSelectorDefaultWildcardStr, wxFD_DEFAULT_STYLE, wxDefaultPosition, wxDefaultSize, _T("wxFileDialog"));
+    FileDialog1 = new wxFileDialog(this, _("Select file"), _("$USER"), wxEmptyString, wxFileSelectorDefaultWildcardStr, wxFD_DEFAULT_STYLE|wxFD_CHANGE_DIR, wxDefaultPosition, wxDefaultSize, _T("wxFileDialog"));
 
     Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&InventoryFrame::OnAddEntryClick);
     Connect(ID_COMBOBOX1,wxEVT_COMMAND_COMBOBOX_SELECTED,(wxObjectEventFunction)&InventoryFrame::OnComboBox_CategorySelected);
     Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&InventoryFrame::OnButton_UploadDatasheetClick);
+    Connect(ID_CHECKBOX1,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&InventoryFrame::OnFileUploadCheckClick);
     Connect(idMenuQuit,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&InventoryFrame::OnQuit);
     Connect(idMenuAbout,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&InventoryFrame::OnAbout);
     Connect(ID_TIMER1,wxEVT_TIMER,(wxObjectEventFunction)&InventoryFrame::OnTimer1Trigger);
@@ -208,6 +214,7 @@ void InventoryFrame::OnAddEntryClick(wxCommandEvent& event)
     TextCtrl_VendorCost->Clear();
     TextCtrl_VendorURL->Clear();
     SpinCtrl_Quantity->SetValue(1);
+    FileUploadCheck->SetValue(false);
     UpdateLists(database, filename);
 }
 
@@ -220,13 +227,12 @@ void InventoryFrame::OnComboBox_CategorySelected(wxCommandEvent& event)
 {
 }
 
-
 //================== User Functions ==================
 
 
 void InventoryFrame::CreateDatabase(wxSQLite3Database* db, const char* filename) {
     const char *sql = "CREATE TABLE Stock(ItemName varchar(30), ItemDescription varchar(100), Manufacturer varchar(30), Category varchar(30), "
-    "VendorName varchar(30), VendorItemNo varchar(30), VendorUnitCost REAL, VendorWebURL BLOB, Quantity INTEGER);";
+    "VendorName varchar(30), VendorItemNo varchar(30), VendorUnitCost REAL, VendorWebURL BLOB, Quantity INTEGER, DS_Dir BLOB);";
     db->Open(wxString::FromUTF8(filename));
     if(!db->TableExists("Stock")) {
         db->ExecuteUpdate(sql);
@@ -244,16 +250,20 @@ void InventoryFrame::InsertDatabase(wxSQLite3Database* db, const char* filename)
     string vendor_url = (TextCtrl_VendorURL->GetValue() != "") ? string(TextCtrl_VendorURL->GetValue()) : "";
     string vendor_cost = (check_digit(string(TextCtrl_VendorCost->GetValue()))) ? string(TextCtrl_VendorCost->GetValue()) : "0.0";
     string quantity = to_string(SpinCtrl_Quantity->GetValue());
-    string sql = "INSERT INTO Stock(ItemName, ItemDescription, Manufacturer, Category, VendorName, VendorItemNo, VendorUnitCost, VendorWebURL, Quantity) VALUES ('";
+    string file_dest = "";
+    if(FileDialog1->GetPath() != "" && (FileUploadCheck->GetValue())) {
+        file_dest = "./datasheets/" +to_string((int)time(NULL)) + "_" + string(FileDialog1->GetFilename());
+        wxCopyFile(string(FileDialog1->GetPath()), file_dest, FALSE);
+    }
+    string sql = "INSERT INTO Stock(ItemName, ItemDescription, Manufacturer, Category, VendorName, VendorItemNo, VendorUnitCost, VendorWebURL, Quantity, DS_Dir) VALUES ('";
     sql += item_name + "','" + item_description + "','" + item_manufacturer + "','" + item_category + "','";
-    sql += vendor_name + "','" + vendor_number + "'," + vendor_cost + ",'" + vendor_url + "'," + quantity + ");";;
+    sql += vendor_name + "','" + vendor_number + "'," + vendor_cost + ",'" + vendor_url + "'," + quantity + ",'" + file_dest + "');";
 
     const char* sql_c = sql.c_str();
     db->Open(wxString::FromUTF8(filename));
     db->ExecuteUpdate(sql_c);
     db->Close();
 }
-
 
 void InventoryFrame::UpdateLists(wxSQLite3Database* db, const char* filename) {
     char sql[42];
@@ -277,7 +287,6 @@ void InventoryFrame::UpdateLists(wxSQLite3Database* db, const char* filename) {
     db->Close();
 }
 
-
 bool check_digit(string my_digit) {
     bool flag = 1;
     for (unsigned int i = 0; i < sizeof(my_digit) / sizeof(string); i++) {
@@ -289,11 +298,6 @@ bool check_digit(string my_digit) {
     return flag;
 }
 
-
-
-
-
-
 void InventoryFrame::OnButton_UploadDatasheetClick(wxCommandEvent& event)
 {
     if (FileDialog1->ShowModal() == wxID_CANCEL) {
@@ -302,8 +306,11 @@ void InventoryFrame::OnButton_UploadDatasheetClick(wxCommandEvent& event)
     StaticText2->SetLabel(FileDialog1->GetFilename());
 }
 
-
-
 void InventoryFrame::OnTextCtrl_ManufacturerText(wxCommandEvent& event)
 {
+}
+
+void InventoryFrame::OnFileUploadCheckClick(wxCommandEvent& event)
+{
+    (FileUploadCheck->GetValue()) ? Button_UploadDatasheet->Enable() : Button_UploadDatasheet->Disable();
 }

@@ -45,6 +45,7 @@
 		<Unit filename="wxsmith/Inventoryframe.wxs" />
 		<Extensions>
 			<lib_finder>
+				<lib name="wxsqlite3" />
 				<lib name="sqlite3" />
 			</lib_finder>
 			<wxsmith version="1">

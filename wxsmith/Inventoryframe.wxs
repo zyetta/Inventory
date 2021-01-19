@@ -106,13 +106,15 @@
 						<pos>616,312</pos>
 					</object>
 					<object class="wxButton" name="ID_BUTTON2" variable="Button_UploadDatasheet" member="yes">
-						<label>Find</label>
-						<pos>768,304</pos>
+						<label>File</label>
+						<pos>808,304</pos>
+						<enabled>0</enabled>
 						<handler function="OnButton_UploadDatasheetClick" entry="EVT_BUTTON" />
 					</object>
 					<object class="wxStaticText" name="ID_STATICTEXT12" variable="StaticText2" member="yes">
 						<label></label>
-						<pos>872,320</pos>
+						<pos>912,312</pos>
+						<size>64,16</size>
 					</object>
 					<object class="wxComboBox" name="ID_COMBOBOX2" variable="ComboBox_Manufacturer" member="yes">
 						<pos>184,136</pos>
@@ -121,6 +123,11 @@
 					<object class="wxComboBox" name="ID_COMBOBOX3" variable="ComboBox_VenderName" member="yes">
 						<pos>768,40</pos>
 						<size>376,34</size>
+					</object>
+					<object class="wxCheckBox" name="ID_CHECKBOX1" variable="FileUploadCheck" member="yes">
+						<pos>768,312</pos>
+						<size>24,22</size>
+						<handler function="OnFileUploadCheckClick" entry="EVT_CHECKBOX" />
 					</object>
 				</object>
 				<label>ADD ITEMS</label>
@@ -154,6 +161,7 @@
 		<object class="wxFileDialog" variable="FileDialog1" member="yes">
 			<message>Select file</message>
 			<default_dir>$USER</default_dir>
+			<style>wxFD_DEFAULT_STYLE|wxFD_CHANGE_DIR</style>
 		</object>
 	</object>
 </wxsmith>

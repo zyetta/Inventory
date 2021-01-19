@@ -13,6 +13,7 @@
 #include <wx/wxsqlite3.h>
 //(*Headers(InventoryFrame)
 #include <wx/button.h>
+#include <wx/checkbox.h>
 #include <wx/combobox.h>
 #include <wx/filedlg.h>
 #include <wx/frame.h>
@@ -48,6 +49,7 @@ class InventoryFrame: public wxFrame
         void OnButton_UploadDatasheetClick(wxCommandEvent& event);
         void OnComboBox_CategorySelected(wxCommandEvent& event);
         void OnTextCtrl_ManufacturerText(wxCommandEvent& event);
+        void OnFileUploadCheckClick(wxCommandEvent& event);
         //*)
 
 
@@ -79,6 +81,7 @@ class InventoryFrame: public wxFrame
         static const long ID_STATICTEXT12;
         static const long ID_COMBOBOX2;
         static const long ID_COMBOBOX3;
+        static const long ID_CHECKBOX1;
         static const long ID_PANEL3;
         static const long ID_NOTEBOOK1;
         static const long idMenuQuit;
@@ -89,6 +92,7 @@ class InventoryFrame: public wxFrame
         //(*Declarations(InventoryFrame)
         wxButton* AddEntry;
         wxButton* Button_UploadDatasheet;
+        wxCheckBox* FileUploadCheck;
         wxComboBox* ComboBox_Category;
         wxComboBox* ComboBox_Manufacturer;
         wxComboBox* ComboBox_VenderName;
