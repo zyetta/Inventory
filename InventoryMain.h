@@ -10,7 +10,7 @@
 #ifndef INVENTORYMAIN_H
 #define INVENTORYMAIN_H
 
-#include <sqlite3.h>
+#include <wx/wxsqlite3.h>
 //(*Headers(InventoryFrame)
 #include <wx/button.h>
 #include <wx/combobox.h>
@@ -25,8 +25,8 @@
 #include <wx/textctrl.h>
 #include <wx/timer.h>
 //*)
+#include <string>
 
-static int callback(void *NotUsed, int argc, char **argv, char **szColName);
 
 class InventoryFrame: public wxFrame
 {
@@ -36,8 +36,8 @@ class InventoryFrame: public wxFrame
         virtual ~InventoryFrame();
 
 
-        void CreateDatabase(sqlite3* db, const char* filename);
-        void InsertDatabase(sqlite3* db, const char* filename, const char* data);
+        void CreateDatabase(wxSQLite3Database* db, const char* filename);
+        void InsertDatabase(wxSQLite3Database* db, const char* filename);
     private:
 
         //(*Handlers(InventoryFrame)
@@ -47,6 +47,7 @@ class InventoryFrame: public wxFrame
         void OnAddEntryClick(wxCommandEvent& event);
         void OnTimer1Trigger(wxTimerEvent& event);
         void OnButton_UploadDatasheetClick(wxCommandEvent& event);
+        void OnComboBox_CategorySelected(wxCommandEvent& event);
         //*)
 
 
@@ -120,5 +121,8 @@ class InventoryFrame: public wxFrame
 
         DECLARE_EVENT_TABLE()
 };
+
+bool check_digit(std::string my_digit) ;
+
 
 #endif // INVENTORYMAIN_H

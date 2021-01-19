@@ -11,14 +11,16 @@
 
 #include <wx/msgdlg.h>
 #include <iostream>
-//(*InternalHeaders(InventoryFrame)
+#include <wx/wx.h>
 #include <wx/intl.h>
 #include <wx/string.h>
-//*)
+#include <wx/wxsqlite3.h>
 #include "InventoryMain.h"
-#include "sqlite3.h"
 #include <string>
 using namespace std;
+
+
+//================== Function Prototypes ==================
 
 //helper functions
 enum wxbuildinfoformat {
@@ -50,7 +52,8 @@ wxString wxbuildinfo(wxbuildinfoformat format)
 //================== Global Constants ==================
 
 const char* filename = "data.db";
-sqlite3 *database;
+wxSQLite3Database* database = new wxSQLite3Database();
+
 
 //(*IdInit(InventoryFrame)
 const long InventoryFrame::ID_STATICBOX3 = wxNewId();
@@ -105,7 +108,6 @@ InventoryFrame::InventoryFrame(wxWindow* parent,wxWindowID id)
     wxMenuBar* MenuBar1;
     wxMenuItem* MenuItem1;
     wxMenuItem* MenuItem2;
-
     Create(parent, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
     SetClientSize(wxSize(1175,435));
     Notebook1 = new wxNotebook(this, ID_NOTEBOOK1, wxPoint(0,0), wxSize(950,540), 0, _T("ID_NOTEBOOK1"));
@@ -153,6 +155,7 @@ InventoryFrame::InventoryFrame(wxWindow* parent,wxWindowID id)
     FileDialog1 = new wxFileDialog(this, _("Select file"), _("$USER"), wxEmptyString, wxFileSelectorDefaultWildcardStr, wxFD_DEFAULT_STYLE, wxDefaultPosition, wxDefaultSize, _T("wxFileDialog"));
 
     Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&InventoryFrame::OnAddEntryClick);
+    Connect(ID_COMBOBOX1,wxEVT_COMMAND_COMBOBOX_SELECTED,(wxObjectEventFunction)&InventoryFrame::OnComboBox_CategorySelected);
     Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&InventoryFrame::OnButton_UploadDatasheetClick);
     Connect(idMenuQuit,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&InventoryFrame::OnQuit);
     Connect(idMenuAbout,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&InventoryFrame::OnAbout);
@@ -160,6 +163,8 @@ InventoryFrame::InventoryFrame(wxWindow* parent,wxWindowID id)
     //*)
 
     CreateDatabase(database, filename);
+
+
 }
 
 
@@ -169,6 +174,7 @@ InventoryFrame::~InventoryFrame()
     //(*Destroy(InventoryFrame)
     //*)
 }
+
 
 //================== Event Handlers ==================
 void InventoryFrame::OnQuit(wxCommandEvent& event)
@@ -189,21 +195,14 @@ void InventoryFrame::OnSearchEntryClick(wxCommandEvent& event)
 
 void InventoryFrame::OnAddEntryClick(wxCommandEvent& event)
 {
-    string pSQL = "INSERT INTO Stock(ItemName, ItemDescription, Manufacturer, Category, VendorName, VendorItemNo, VendorUnitCost, VendorWebURL, Quantity) VALUES ('";
-    pSQL += string(TextCtrl_ItemName->GetValue()) + "','" + string(TextCtrl_Description->GetValue()) + "','" + string(TextCtrl_Manufacturer->GetValue()) + "','" + string(ComboBox_Category->GetValue()) + "','";
-    pSQL += string(TextCtrl_VendorName->GetValue()) + "','" + string(TextCtrl_VenderNumber->GetValue()) + "'," + string(TextCtrl_VendorCost->GetValue()) + ",'" + string(TextCtrl_VendorURL->GetValue()) + "',";
-    pSQL += to_string(SpinCtrl_Quantity->GetValue()) + ");";
-    const char* pSQL_c = pSQL.c_str();
+    InsertDatabase(database, filename);
 
-    InsertDatabase(database, filename, pSQL_c);
     StaticText_Notification->SetLabel("Successfully Added!");
     Timer1.Start(3000, true);
-
     TextCtrl_ItemName->Clear();
     TextCtrl_Description->Clear();
     TextCtrl_Manufacturer->Clear();
     ComboBox_Category->Clear();
-
     TextCtrl_VendorName->Clear();
     TextCtrl_VenderNumber->Clear();
     TextCtrl_VendorCost->Clear();
@@ -216,52 +215,54 @@ void InventoryFrame::OnTimer1Trigger(wxTimerEvent& event)
     StaticText_Notification->SetLabel("");
 }
 
+void InventoryFrame::OnComboBox_CategorySelected(wxCommandEvent& event)
+{
+}
+
 
 //================== User Functions ==================
-static int callback(void *NotUsed, int argc, char **argv, char **szColName) {
-  for(int i = 0; i < argc; i++) {
-    cout << szColName[i] << " = " << argv[i] << endl;
-  }
-  cout << endl;
-  return 0;
+
+
+void InventoryFrame::CreateDatabase(wxSQLite3Database* db, const char* filename) {
+    const char *pSQL = "CREATE TABLE Stock(ItemName varchar(30), ItemDescription varchar(100), Manufacturer varchar(30), Category varchar(30), "
+    "VendorName varchar(30), VendorItemNo varchar(30), VendorUnitCost REAL, VendorWebURL BLOB, Quantity INTEGER);";
+    db->Open(wxString::FromUTF8(filename));
+    if(!db->TableExists("Stock")) {
+        db->ExecuteUpdate(pSQL);
+    }
+    db->Close();
 }
 
+void InventoryFrame::InsertDatabase(wxSQLite3Database* db, const char* filename) {
+    string item_name = (TextCtrl_ItemName->GetValue() != "") ? string(TextCtrl_ItemName->GetValue()) : "";
+    string item_description = (TextCtrl_Description->GetValue() != "") ? string(TextCtrl_Description->GetValue()) : "";
+    string item_manufacturer = (TextCtrl_Manufacturer->GetValue() != "") ? string(TextCtrl_Manufacturer->GetValue()) : "";
+    string item_category = (ComboBox_Category->GetValue() != "") ? string(ComboBox_Category->GetValue()) : "";
+    string vendor_name = (TextCtrl_VendorName->GetValue() != "") ? string(TextCtrl_VendorName->GetValue()) : "";
+    string vendor_number = (TextCtrl_VenderNumber->GetValue() != "") ? string(TextCtrl_VenderNumber->GetValue()) : "";
+    string vendor_url = (TextCtrl_VendorURL->GetValue() != "") ? string(TextCtrl_VendorURL->GetValue()) : "";
+    string vendor_cost = (check_digit(string(TextCtrl_VendorCost->GetValue()))) ? string(TextCtrl_VendorCost->GetValue()) : "0.0";
+    string quantity = to_string(SpinCtrl_Quantity->GetValue());
+    string sql = "INSERT INTO Stock(ItemName, ItemDescription, Manufacturer, Category, VendorName, VendorItemNo, VendorUnitCost, VendorWebURL, Quantity) VALUES ('";
+    sql += item_name + "','" + item_description + "','" + item_manufacturer + "','" + item_category + "','";
+    sql += vendor_name + "','" + vendor_number + "'," + vendor_cost + ",'" + vendor_url + "'," + quantity + ");";;
 
-void InventoryFrame::CreateDatabase(sqlite3* db, const char* filename) {
-    const char *pSQL = "CREATE TABLE Stock(ItemName varchar(30), ItemDescription varchar(100), Manufacturer varchar(30), "
-    "Category varchar(30), VendorName varchar(30), VendorItemNo varchar(30), VendorUnitCost REAL, VendorWebURL BLOB, Quantity INTEGER);";
-    char *szErrMsg = 0;
-    int rc = sqlite3_open(filename, &db);
-    if(rc) {
-        cout << "Error: Can't open database." << endl;
-    }
-    rc = sqlite3_exec(db, pSQL, callback, 0, &szErrMsg);
-    if(rc != SQLITE_OK) {
-        cout << "SQL Error: " << szErrMsg << endl;
-        sqlite3_free(szErrMsg);
-    }
-    if(db) {
-        sqlite3_close(db);
-    }
+    const char* sql_c = sql.c_str();
+    db->Open(wxString::FromUTF8(filename));
+    db->ExecuteUpdate(sql_c);
+    db->Close();
 }
 
-void InventoryFrame::InsertDatabase(sqlite3* db, const char* filename, const char* data) {
-    char *szErrMsg = 0;
-    int rc = sqlite3_open(filename, &db);
-    if(rc) {
-        cout << "Error: Can't open database." << endl;
+bool check_digit(string my_digit) {
+    bool flag = 1;
+    for (unsigned int i = 0; i < sizeof(my_digit) / sizeof(string); i++) {
+            if(!isdigit(my_digit[i]) ) {
+                flag = 0;
+                break;
+            }
     }
-    rc = sqlite3_exec(db, data, callback, 0, &szErrMsg);
-    if(rc != SQLITE_OK) {
-        cout << "SQL Error: " << szErrMsg << endl;
-        sqlite3_free(szErrMsg);
-    }
-    if(db) {
-        sqlite3_close(db);
-    }
+    return flag;
 }
-
-
 
 
 
@@ -275,7 +276,6 @@ void InventoryFrame::OnButton_UploadDatasheetClick(wxCommandEvent& event)
     }
 
     StaticText2->SetLabel(FileDialog1->GetFilename());
-
-
-
 }
+
+

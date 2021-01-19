@@ -107,6 +107,7 @@
 					<object class="wxComboBox" name="ID_COMBOBOX1" variable="ComboBox_Category" member="yes">
 						<pos>184,184</pos>
 						<size>376,34</size>
+						<handler function="OnComboBox_CategorySelected" entry="EVT_COMBOBOX" />
 					</object>
 					<object class="wxStaticText" name="ID_STATICTEXT11" variable="StaticText1" member="yes">
 						<label>DATASHEET</label>
