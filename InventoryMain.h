@@ -34,8 +34,6 @@ class InventoryFrame: public wxFrame
 
         InventoryFrame(wxWindow* parent,wxWindowID id = -1);
         virtual ~InventoryFrame();
-
-
         void CreateDatabase(wxSQLite3Database* db, const char* filename);
         void InsertDatabase(wxSQLite3Database* db, const char* filename);
         void UpdateLists(wxSQLite3Database* db, const char* filename);

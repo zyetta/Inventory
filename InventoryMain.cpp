@@ -278,10 +278,6 @@ void InventoryFrame::UpdateLists(wxSQLite3Database* db, const char* filename) {
 }
 
 
-
-
-
-
 bool check_digit(string my_digit) {
     bool flag = 1;
     for (unsigned int i = 0; i < sizeof(my_digit) / sizeof(string); i++) {
