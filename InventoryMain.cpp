@@ -69,11 +69,9 @@ const long InventoryFrame::ID_TEXTCTRL3 = wxNewId();
 const long InventoryFrame::ID_TEXTCTRL5 = wxNewId();
 const long InventoryFrame::ID_STATICTEXT4 = wxNewId();
 const long InventoryFrame::ID_STATICTEXT5 = wxNewId();
-const long InventoryFrame::ID_TEXTCTRL6 = wxNewId();
 const long InventoryFrame::ID_TEXTCTRL7 = wxNewId();
 const long InventoryFrame::ID_STATICTEXT6 = wxNewId();
 const long InventoryFrame::ID_STATICTEXT7 = wxNewId();
-const long InventoryFrame::ID_TEXTCTRL8 = wxNewId();
 const long InventoryFrame::ID_STATICTEXT9 = wxNewId();
 const long InventoryFrame::ID_STATICTEXT10 = wxNewId();
 const long InventoryFrame::ID_SPINCTRL1 = wxNewId();
@@ -82,6 +80,8 @@ const long InventoryFrame::ID_COMBOBOX1 = wxNewId();
 const long InventoryFrame::ID_STATICTEXT11 = wxNewId();
 const long InventoryFrame::ID_BUTTON2 = wxNewId();
 const long InventoryFrame::ID_STATICTEXT12 = wxNewId();
+const long InventoryFrame::ID_COMBOBOX2 = wxNewId();
+const long InventoryFrame::ID_COMBOBOX3 = wxNewId();
 const long InventoryFrame::ID_PANEL3 = wxNewId();
 const long InventoryFrame::ID_NOTEBOOK1 = wxNewId();
 const long InventoryFrame::idMenuQuit = wxNewId();
@@ -108,6 +108,7 @@ InventoryFrame::InventoryFrame(wxWindow* parent,wxWindowID id)
     wxMenuBar* MenuBar1;
     wxMenuItem* MenuItem1;
     wxMenuItem* MenuItem2;
+
     Create(parent, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
     SetClientSize(wxSize(1175,435));
     Notebook1 = new wxNotebook(this, ID_NOTEBOOK1, wxPoint(0,0), wxSize(950,540), 0, _T("ID_NOTEBOOK1"));
@@ -125,11 +126,9 @@ InventoryFrame::InventoryFrame(wxWindow* parent,wxWindowID id)
     TextCtrl_VendorCost = new wxTextCtrl(Panel3, ID_TEXTCTRL5, wxEmptyString, wxPoint(768,136), wxSize(376,34), 0, wxDefaultValidator, _T("ID_TEXTCTRL5"));
     StaticText4 = new wxStaticText(Panel3, ID_STATICTEXT4, _("VENDOR ITEM NO."), wxPoint(616,96), wxDefaultSize, 0, _T("ID_STATICTEXT4"));
     StaticText5 = new wxStaticText(Panel3, ID_STATICTEXT5, _("VENDOR NAME"), wxPoint(616,48), wxDefaultSize, 0, _T("ID_STATICTEXT5"));
-    TextCtrl_VendorName = new wxTextCtrl(Panel3, ID_TEXTCTRL6, wxEmptyString, wxPoint(768,40), wxSize(376,34), 0, wxDefaultValidator, _T("ID_TEXTCTRL6"));
     TextCtrl_VenderNumber = new wxTextCtrl(Panel3, ID_TEXTCTRL7, wxEmptyString, wxPoint(768,88), wxSize(376,34), 0, wxDefaultValidator, _T("ID_TEXTCTRL7"));
     StaticText6 = new wxStaticText(Panel3, ID_STATICTEXT6, _("VENDOR UNIT COST"), wxPoint(616,144), wxDefaultSize, 0, _T("ID_STATICTEXT6"));
     StaticText7 = new wxStaticText(Panel3, ID_STATICTEXT7, _("VENDOR WEB URL"), wxPoint(616,192), wxDefaultSize, 0, _T("ID_STATICTEXT7"));
-    TextCtrl_Manufacturer = new wxTextCtrl(Panel3, ID_TEXTCTRL8, wxEmptyString, wxPoint(184,136), wxSize(376,34), 0, wxDefaultValidator, _T("ID_TEXTCTRL8"));
     StaticText9 = new wxStaticText(Panel3, ID_STATICTEXT9, _("CATEGORY"), wxPoint(32,192), wxDefaultSize, 0, _T("ID_STATICTEXT9"));
     StaticText10 = new wxStaticText(Panel3, ID_STATICTEXT10, _("QUANTITY"), wxPoint(616,264), wxDefaultSize, 0, _T("ID_STATICTEXT10"));
     SpinCtrl_Quantity = new wxSpinCtrl(Panel3, ID_SPINCTRL1, _T("1"), wxPoint(768,256), wxSize(376,34), 0, 0, 100000, 1, _T("ID_SPINCTRL1"));
@@ -139,6 +138,8 @@ InventoryFrame::InventoryFrame(wxWindow* parent,wxWindowID id)
     StaticText1 = new wxStaticText(Panel3, ID_STATICTEXT11, _("DATASHEET"), wxPoint(616,312), wxDefaultSize, 0, _T("ID_STATICTEXT11"));
     Button_UploadDatasheet = new wxButton(Panel3, ID_BUTTON2, _("Find"), wxPoint(768,304), wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON2"));
     StaticText2 = new wxStaticText(Panel3, ID_STATICTEXT12, wxEmptyString, wxPoint(872,320), wxDefaultSize, 0, _T("ID_STATICTEXT12"));
+    ComboBox_Manufacturer = new wxComboBox(Panel3, ID_COMBOBOX2, wxEmptyString, wxPoint(184,136), wxSize(376,34), 0, 0, 0, wxDefaultValidator, _T("ID_COMBOBOX2"));
+    ComboBox_VenderName = new wxComboBox(Panel3, ID_COMBOBOX3, wxEmptyString, wxPoint(768,40), wxSize(376,34), 0, 0, 0, wxDefaultValidator, _T("ID_COMBOBOX3"));
     Notebook1->AddPage(Panel3, _("ADD ITEMS"), false);
     MenuBar1 = new wxMenuBar();
     Menu1 = new wxMenu();
@@ -163,7 +164,7 @@ InventoryFrame::InventoryFrame(wxWindow* parent,wxWindowID id)
     //*)
 
     CreateDatabase(database, filename);
-
+    UpdateLists(database, filename);
 
 }
 
@@ -196,18 +197,18 @@ void InventoryFrame::OnSearchEntryClick(wxCommandEvent& event)
 void InventoryFrame::OnAddEntryClick(wxCommandEvent& event)
 {
     InsertDatabase(database, filename);
-
     StaticText_Notification->SetLabel("Successfully Added!");
     Timer1.Start(3000, true);
     TextCtrl_ItemName->Clear();
     TextCtrl_Description->Clear();
-    TextCtrl_Manufacturer->Clear();
+    ComboBox_Manufacturer->Clear();
     ComboBox_Category->Clear();
-    TextCtrl_VendorName->Clear();
+    ComboBox_VenderName->Clear();
     TextCtrl_VenderNumber->Clear();
     TextCtrl_VendorCost->Clear();
     TextCtrl_VendorURL->Clear();
     SpinCtrl_Quantity->SetValue(1);
+    UpdateLists(database, filename);
 }
 
 void InventoryFrame::OnTimer1Trigger(wxTimerEvent& event)
@@ -224,11 +225,11 @@ void InventoryFrame::OnComboBox_CategorySelected(wxCommandEvent& event)
 
 
 void InventoryFrame::CreateDatabase(wxSQLite3Database* db, const char* filename) {
-    const char *pSQL = "CREATE TABLE Stock(ItemName varchar(30), ItemDescription varchar(100), Manufacturer varchar(30), Category varchar(30), "
+    const char *sql = "CREATE TABLE Stock(ItemName varchar(30), ItemDescription varchar(100), Manufacturer varchar(30), Category varchar(30), "
     "VendorName varchar(30), VendorItemNo varchar(30), VendorUnitCost REAL, VendorWebURL BLOB, Quantity INTEGER);";
     db->Open(wxString::FromUTF8(filename));
     if(!db->TableExists("Stock")) {
-        db->ExecuteUpdate(pSQL);
+        db->ExecuteUpdate(sql);
     }
     db->Close();
 }
@@ -236,9 +237,9 @@ void InventoryFrame::CreateDatabase(wxSQLite3Database* db, const char* filename)
 void InventoryFrame::InsertDatabase(wxSQLite3Database* db, const char* filename) {
     string item_name = (TextCtrl_ItemName->GetValue() != "") ? string(TextCtrl_ItemName->GetValue()) : "";
     string item_description = (TextCtrl_Description->GetValue() != "") ? string(TextCtrl_Description->GetValue()) : "";
-    string item_manufacturer = (TextCtrl_Manufacturer->GetValue() != "") ? string(TextCtrl_Manufacturer->GetValue()) : "";
+    string item_manufacturer = (ComboBox_Manufacturer->GetValue() != "") ? string(ComboBox_Manufacturer->GetValue()) : "";
     string item_category = (ComboBox_Category->GetValue() != "") ? string(ComboBox_Category->GetValue()) : "";
-    string vendor_name = (TextCtrl_VendorName->GetValue() != "") ? string(TextCtrl_VendorName->GetValue()) : "";
+    string vendor_name = (ComboBox_VenderName->GetValue() != "") ? string(ComboBox_VenderName->GetValue()) : "";
     string vendor_number = (TextCtrl_VenderNumber->GetValue() != "") ? string(TextCtrl_VenderNumber->GetValue()) : "";
     string vendor_url = (TextCtrl_VendorURL->GetValue() != "") ? string(TextCtrl_VendorURL->GetValue()) : "";
     string vendor_cost = (check_digit(string(TextCtrl_VendorCost->GetValue()))) ? string(TextCtrl_VendorCost->GetValue()) : "0.0";
@@ -252,6 +253,34 @@ void InventoryFrame::InsertDatabase(wxSQLite3Database* db, const char* filename)
     db->ExecuteUpdate(sql_c);
     db->Close();
 }
+
+
+void InventoryFrame::UpdateLists(wxSQLite3Database* db, const char* filename) {
+    char sql[42];
+    db->Open(wxString::FromUTF8(filename));
+
+    strcpy(sql, "SELECT DISTINCT Category FROM STOCK;");
+    wxSQLite3ResultSet result = db->ExecuteQuery(sql);
+    while (result.NextRow()) {
+            ComboBox_Category->Append(_(wxString::Format(_("%s"), result.GetAsString(0))));
+    }
+    strcpy(sql, "SELECT DISTINCT VendorName FROM STOCK;");
+    result = db->ExecuteQuery(sql);
+    while (result.NextRow()) {
+            ComboBox_VenderName->Append(_(wxString::Format(_("%s"), result.GetAsString(0))));
+    }
+    strcpy(sql, "SELECT DISTINCT Manufacturer FROM STOCK;");
+    result = db->ExecuteQuery(sql);
+    while (result.NextRow()) {
+            ComboBox_Manufacturer->Append(_(wxString::Format(_("%s"), result.GetAsString(0))));
+    }
+    db->Close();
+}
+
+
+
+
+
 
 bool check_digit(string my_digit) {
     bool flag = 1;
@@ -274,8 +303,11 @@ void InventoryFrame::OnButton_UploadDatasheetClick(wxCommandEvent& event)
     if (FileDialog1->ShowModal() == wxID_CANCEL) {
         return;
     }
-
     StaticText2->SetLabel(FileDialog1->GetFilename());
 }
 
 
+
+void InventoryFrame::OnTextCtrl_ManufacturerText(wxCommandEvent& event)
+{
+}

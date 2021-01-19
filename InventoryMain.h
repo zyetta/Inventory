@@ -38,6 +38,7 @@ class InventoryFrame: public wxFrame
 
         void CreateDatabase(wxSQLite3Database* db, const char* filename);
         void InsertDatabase(wxSQLite3Database* db, const char* filename);
+        void UpdateLists(wxSQLite3Database* db, const char* filename);
     private:
 
         //(*Handlers(InventoryFrame)
@@ -48,6 +49,7 @@ class InventoryFrame: public wxFrame
         void OnTimer1Trigger(wxTimerEvent& event);
         void OnButton_UploadDatasheetClick(wxCommandEvent& event);
         void OnComboBox_CategorySelected(wxCommandEvent& event);
+        void OnTextCtrl_ManufacturerText(wxCommandEvent& event);
         //*)
 
 
@@ -66,11 +68,9 @@ class InventoryFrame: public wxFrame
         static const long ID_TEXTCTRL5;
         static const long ID_STATICTEXT4;
         static const long ID_STATICTEXT5;
-        static const long ID_TEXTCTRL6;
         static const long ID_TEXTCTRL7;
         static const long ID_STATICTEXT6;
         static const long ID_STATICTEXT7;
-        static const long ID_TEXTCTRL8;
         static const long ID_STATICTEXT9;
         static const long ID_STATICTEXT10;
         static const long ID_SPINCTRL1;
@@ -79,6 +79,8 @@ class InventoryFrame: public wxFrame
         static const long ID_STATICTEXT11;
         static const long ID_BUTTON2;
         static const long ID_STATICTEXT12;
+        static const long ID_COMBOBOX2;
+        static const long ID_COMBOBOX3;
         static const long ID_PANEL3;
         static const long ID_NOTEBOOK1;
         static const long idMenuQuit;
@@ -90,6 +92,8 @@ class InventoryFrame: public wxFrame
         wxButton* AddEntry;
         wxButton* Button_UploadDatasheet;
         wxComboBox* ComboBox_Category;
+        wxComboBox* ComboBox_Manufacturer;
+        wxComboBox* ComboBox_VenderName;
         wxFileDialog* FileDialog1;
         wxNotebook* Notebook1;
         wxPanel* Panel3;
@@ -111,10 +115,8 @@ class InventoryFrame: public wxFrame
         wxStaticText* StaticText_Notification;
         wxTextCtrl* TextCtrl_Description;
         wxTextCtrl* TextCtrl_ItemName;
-        wxTextCtrl* TextCtrl_Manufacturer;
         wxTextCtrl* TextCtrl_VenderNumber;
         wxTextCtrl* TextCtrl_VendorCost;
-        wxTextCtrl* TextCtrl_VendorName;
         wxTextCtrl* TextCtrl_VendorURL;
         wxTimer Timer1;
         //*)

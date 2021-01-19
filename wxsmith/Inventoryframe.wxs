@@ -66,10 +66,6 @@
 						<label>VENDOR NAME</label>
 						<pos>616,48</pos>
 					</object>
-					<object class="wxTextCtrl" name="ID_TEXTCTRL6" variable="TextCtrl_VendorName" member="yes">
-						<pos>768,40</pos>
-						<size>376,34</size>
-					</object>
 					<object class="wxTextCtrl" name="ID_TEXTCTRL7" variable="TextCtrl_VenderNumber" member="yes">
 						<pos>768,88</pos>
 						<size>376,34</size>
@@ -81,10 +77,6 @@
 					<object class="wxStaticText" name="ID_STATICTEXT7" variable="StaticText7" member="yes">
 						<label>VENDOR WEB URL</label>
 						<pos>616,192</pos>
-					</object>
-					<object class="wxTextCtrl" name="ID_TEXTCTRL8" variable="TextCtrl_Manufacturer" member="yes">
-						<pos>184,136</pos>
-						<size>376,34</size>
 					</object>
 					<object class="wxStaticText" name="ID_STATICTEXT9" variable="StaticText9" member="yes">
 						<label>CATEGORY</label>
@@ -121,6 +113,14 @@
 					<object class="wxStaticText" name="ID_STATICTEXT12" variable="StaticText2" member="yes">
 						<label></label>
 						<pos>872,320</pos>
+					</object>
+					<object class="wxComboBox" name="ID_COMBOBOX2" variable="ComboBox_Manufacturer" member="yes">
+						<pos>184,136</pos>
+						<size>376,34</size>
+					</object>
+					<object class="wxComboBox" name="ID_COMBOBOX3" variable="ComboBox_VenderName" member="yes">
+						<pos>768,40</pos>
+						<size>376,34</size>
 					</object>
 				</object>
 				<label>ADD ITEMS</label>
