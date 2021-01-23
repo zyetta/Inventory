@@ -559,18 +559,21 @@
 
 1610865652 /usr/local/include/wx-3.1/wx/gtk/app.h
 
-1611056647 /mnt/internal/Documents/Development/C++/Inventory/InventoryMain.h
+1611351412 /mnt/internal/Documents/Development/C++/Inventory/InventoryMain.h
 	<wx/wxsqlite3.h>
 	<wx/button.h>
 	<wx/checkbox.h>
 	<wx/combobox.h>
 	<wx/filedlg.h>
 	<wx/frame.h>
+	<wx/grid.h>
+	<wx/hyperlink.h>
 	<wx/menu.h>
 	<wx/notebook.h>
 	<wx/panel.h>
 	<wx/spinctrl.h>
 	<wx/statbox.h>
+	<wx/statline.h>
 	<wx/stattext.h>
 	<wx/textctrl.h>
 	<wx/timer.h>
@@ -1130,7 +1133,7 @@
 	"wx/window.h"
 	"wx/containr.h"
 
-1611056667 source:/mnt/internal/Documents/Development/C++/Inventory/InventoryMain.cpp
+1611351306 source:/mnt/internal/Documents/Development/C++/Inventory/InventoryMain.cpp
 	<wx/msgdlg.h>
 	<iostream>
 	<wx/wx.h>
@@ -1755,4 +1758,185 @@
 
 1610865652 /usr/local/include/wx-3.1/wx/gtk/mdi.h
 	"wx/frame.h"
+
+1610865652 /usr/local/include/wx-3.1/wx/splitter.h
+	"wx/event.h"
+	"wx/generic/splitter.h"
+
+1610865652 /usr/local/include/wx-3.1/wx/generic/splitter.h
+	"wx/window.h"
+	"wx/containr.h"
+
+1610865653 /usr/local/include/wx-3.1/wx/html/htmlwin.h
+	"wx/defs.h"
+	"wx/window.h"
+	"wx/scrolwin.h"
+	"wx/config.h"
+	"wx/stopwatch.h"
+	"wx/html/winpars.h"
+	"wx/html/htmlcell.h"
+	"wx/filesys.h"
+	"wx/html/htmlfilt.h"
+	"wx/filename.h"
+	"wx/bitmap.h"
+
+1610865652 /usr/local/include/wx-3.1/wx/config.h
+	"wx/confbase.h"
+	"wx/msw/regconf.h"
+	"wx/fileconf.h"
+
+1610865652 /usr/local/include/wx-3.1/wx/confbase.h
+	"wx/defs.h"
+	"wx/string.h"
+	"wx/object.h"
+	"wx/base64.h"
+
+1610865652 /usr/local/include/wx-3.1/wx/base64.h
+	"wx/defs.h"
+	"wx/string.h"
+	"wx/buffer.h"
+
+1610865652 /usr/local/include/wx-3.1/wx/fileconf.h
+	"wx/defs.h"
+	"wx/textfile.h"
+	"wx/string.h"
+	"wx/confbase.h"
+	"wx/filename.h"
+
+1610865652 /usr/local/include/wx-3.1/wx/textfile.h
+	"wx/defs.h"
+	"wx/textbuf.h"
+	"wx/file.h"
+
+1610865652 /usr/local/include/wx-3.1/wx/textbuf.h
+	"wx/defs.h"
+	"wx/arrstr.h"
+	"wx/convauto.h"
+	"wx/string.h"
+	"wx/dynarray.h"
+
+1610865653 /usr/local/include/wx-3.1/wx/html/winpars.h
+	"wx/defs.h"
+	"wx/module.h"
+	"wx/font.h"
+	"wx/html/htmlpars.h"
+	"wx/html/htmlcell.h"
+	"wx/encconv.h"
+
+1610865653 /usr/local/include/wx-3.1/wx/html/htmlpars.h
+	"wx/defs.h"
+	"wx/html/htmltag.h"
+	"wx/filesys.h"
+	"wx/hashmap.h"
+	"wx/hashset.h"
+	"wx/vector.h"
+	"wx/fontenc.h"
+
+1610865653 /usr/local/include/wx-3.1/wx/html/htmltag.h
+	"wx/defs.h"
+	"wx/object.h"
+	"wx/arrstr.h"
+
+1610865652 /usr/local/include/wx-3.1/wx/filesys.h
+	"wx/defs.h"
+	"wx/stream.h"
+	"wx/datetime.h"
+	"wx/filename.h"
+	"wx/hashmap.h"
+
+1610865652 /usr/local/include/wx-3.1/wx/hashset.h
+	"wx/hashmap.h"
+	<unordered_set>
+	<tr1/unordered_set>
+	<ext/hash_set>
+	<hash_set>
+
+1610865653 /usr/local/include/wx-3.1/wx/html/htmlcell.h
+	"wx/defs.h"
+	"wx/html/htmltag.h"
+	"wx/html/htmldefs.h"
+	"wx/window.h"
+	"wx/brush.h"
+
+1610865653 /usr/local/include/wx-3.1/wx/html/htmldefs.h
+	"wx/defs.h"
+
+1610865652 /usr/local/include/wx-3.1/wx/encconv.h
+	"wx/defs.h"
+	"wx/object.h"
+	"wx/fontenc.h"
+	"wx/dynarray.h"
+
+1610865653 /usr/local/include/wx-3.1/wx/html/htmlfilt.h
+	"wx/defs.h"
+	"wx/filesys.h"
+
+1610865652 /usr/local/include/wx-3.1/wx/treectrl.h
+	"wx/defs.h"
+	"wx/control.h"
+	"wx/treebase.h"
+	"wx/textctrl.h"
+	"wx/systhemectrl.h"
+	"wx/generic/treectlg.h"
+	"wx/msw/treectrl.h"
+	"wx/qt/treectrl.h"
+
+1610865652 /usr/local/include/wx-3.1/wx/treebase.h
+	"wx/defs.h"
+	"wx/window.h"
+	"wx/event.h"
+	"wx/dynarray.h"
+	"wx/itemid.h"
+
+1610865652 /usr/local/include/wx-3.1/wx/itemid.h
+
+1610865652 /usr/local/include/wx-3.1/wx/generic/treectlg.h
+	"wx/brush.h"
+	"wx/pen.h"
+	"wx/scrolwin.h"
+
+1610865653 /usr/local/include/wx-3.1/wx/htmllbox.h
+	"wx/defs.h"
+	"wx/vlbox.h"
+	"wx/html/htmlwin.h"
+	"wx/ctrlsub.h"
+	"wx/filesys.h"
+
+1610865652 /usr/local/include/wx-3.1/wx/vlbox.h
+	"wx/vscroll.h"
+	"wx/bitmap.h"
+
+1610865652 /usr/local/include/wx-3.1/wx/vscroll.h
+	"wx/panel.h"
+	"wx/position.h"
+	"wx/scrolwin.h"
+
+1610865652 /usr/local/include/wx-3.1/wx/position.h
+	"wx/gdicmn.h"
+
+1610865652 /usr/local/include/wx-3.1/wx/hyperlink.h
+	"wx/defs.h"
+	"wx/control.h"
+	"wx/gtk/hyperlink.h"
+	"wx/msw/hyperlink.h"
+	"wx/generic/hyperlink.h"
+
+1610865653 /usr/local/include/wx-3.1/wx/gtk/hyperlink.h
+	"wx/generic/hyperlink.h"
+
+1610865652 /usr/local/include/wx-3.1/wx/generic/hyperlink.h
+
+1610865652 /usr/local/include/wx-3.1/wx/statline.h
+	"wx/defs.h"
+	"wx/control.h"
+	"wx/univ/statline.h"
+	"wx/msw/statline.h"
+	"wx/gtk/statline.h"
+	"wx/gtk1/statline.h"
+	"wx/osx/statline.h"
+	"wx/qt/statline.h"
+	"wx/generic/statline.h"
+
+1610865653 /usr/local/include/wx-3.1/wx/gtk/statline.h
+	"wx/defs.h"
 

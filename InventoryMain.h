@@ -17,11 +17,14 @@
 #include <wx/combobox.h>
 #include <wx/filedlg.h>
 #include <wx/frame.h>
+#include <wx/grid.h>
+#include <wx/hyperlink.h>
 #include <wx/menu.h>
 #include <wx/notebook.h>
 #include <wx/panel.h>
 #include <wx/spinctrl.h>
 #include <wx/statbox.h>
+#include <wx/statline.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 #include <wx/timer.h>
@@ -38,6 +41,7 @@ class InventoryFrame: public wxFrame
         void CreateDatabase(wxSQLite3Database* db, const char* filename);
         void InsertDatabase(wxSQLite3Database* db, const char* filename);
         void UpdateLists(wxSQLite3Database* db, const char* filename);
+        void SearchLists(wxSQLite3Database* db, const char* filename);
     private:
 
         //(*Handlers(InventoryFrame)
@@ -50,11 +54,40 @@ class InventoryFrame: public wxFrame
         void OnComboBox_CategorySelected(wxCommandEvent& event);
         void OnTextCtrl_ManufacturerText(wxCommandEvent& event);
         void OnFileUploadCheckClick(wxCommandEvent& event);
+        void OnChoice_SearchCategorySelect(wxCommandEvent& event);
+        void OnChoice_SeardManufacturerSelect(wxCommandEvent& event);
+        void OnComboBox_SeardManufacturerSelected(wxCommandEvent& event);
+        void OnComboBox_SearchCategorySelected(wxCommandEvent& event);
+        void OnComboBox_VendorSelected(wxCommandEvent& event);
+        void OnComboBox_ItemSelected(wxCommandEvent& event);
+        void OnButton1Click(wxCommandEvent& event);
+        void OnButton2Click(wxCommandEvent& event);
+        void OnSimpleHtmlListBox1Select(wxCommandEvent& event);
+        void OnHyperlinkCtrl2Click(wxCommandEvent& event);
+        void OnButton1Click1(wxCommandEvent& event);
+        void OnButton2Click1(wxCommandEvent& event);
         //*)
 
 
 
         //(*Identifiers(InventoryFrame)
+        static const long ID_STATICTEXT13;
+        static const long ID_STATICTEXT14;
+        static const long ID_STATICTEXT15;
+        static const long ID_STATICTEXT16;
+        static const long ID_GRID1;
+        static const long ID_COMBOBOX4;
+        static const long ID_COMBOBOX5;
+        static const long ID_COMBOBOX6;
+        static const long ID_COMBOBOX7;
+        static const long ID_HYPERLINKCTRL1;
+        static const long ID_HYPERLINKCTRL2;
+        static const long ID_STATICLINE1;
+        static const long ID_BUTTON3;
+        static const long ID_BUTTON4;
+        static const long ID_STATICTEXT17;
+        static const long ID_PANEL1;
+        static const long ID_STATICBOX4;
         static const long ID_STATICBOX3;
         static const long ID_STATICBOX2;
         static const long ID_STATICBOX1;
@@ -91,25 +124,43 @@ class InventoryFrame: public wxFrame
 
         //(*Declarations(InventoryFrame)
         wxButton* AddEntry;
+        wxButton* Button1;
+        wxButton* Button2;
         wxButton* Button_UploadDatasheet;
         wxCheckBox* FileUploadCheck;
         wxComboBox* ComboBox_Category;
+        wxComboBox* ComboBox_Item;
         wxComboBox* ComboBox_Manufacturer;
+        wxComboBox* ComboBox_SearchCategory;
+        wxComboBox* ComboBox_SeardManufacturer;
         wxComboBox* ComboBox_VenderName;
+        wxComboBox* ComboBox_Vendor;
         wxFileDialog* FileDialog1;
+        wxFileDialog* FileDialog2;
+        wxGrid* Select_Grid;
+        wxHyperlinkCtrl* HyperlinkCtrl1;
+        wxHyperlinkCtrl* HyperlinkCtrl2;
         wxNotebook* Notebook1;
+        wxPanel* Panel1;
         wxPanel* Panel3;
         wxSpinCtrl* SpinCtrl_Quantity;
         wxStaticBox* StaticBox1;
+        wxStaticBox* StaticBox2;
         wxStaticBox* StaticBox_ItemInfo;
         wxStaticBox* StaticBox_VendorInfo;
+        wxStaticLine* StaticLine1;
         wxStaticText* StaticText10;
+        wxStaticText* StaticText11;
+        wxStaticText* StaticText12;
+        wxStaticText* StaticText13;
         wxStaticText* StaticText1;
         wxStaticText* StaticText2;
+        wxStaticText* StaticText3;
         wxStaticText* StaticText4;
         wxStaticText* StaticText5;
         wxStaticText* StaticText6;
         wxStaticText* StaticText7;
+        wxStaticText* StaticText8;
         wxStaticText* StaticText9;
         wxStaticText* StaticText_ItemDesc;
         wxStaticText* StaticText_ItemName;
