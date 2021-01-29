@@ -2,6 +2,8 @@
 <wxsmith>
 	<object class="wxFrame" name="InventoryFrame">
 		<size>1200,390</size>
+		<minsize>1200,390</minsize>
+		<maxsize>1200,390</maxsize>
 		<id_arg>0</id_arg>
 		<object class="wxNotebook" name="ID_NOTEBOOK1" variable="Notebook1" member="yes">
 			<pos>0,0</pos>
@@ -274,6 +276,10 @@
 		<object class="wxFileDialog" variable="FileDialog2" member="yes">
 			<message>Select file</message>
 			<style>wxFD_SAVE|wxFD_CHANGE_DIR</style>
+		</object>
+		<object class="wxFileDialog" variable="FileDialog3" member="yes">
+			<message>Select file</message>
+			<style>wxFD_SAVE</style>
 		</object>
 	</object>
 </wxsmith>

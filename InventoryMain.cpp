@@ -52,7 +52,7 @@ wxString wxbuildinfo(wxbuildinfoformat format)
 
 //================== Global Constants ==================
 
-const char* filename = "data.db";
+string filename = "data.db";
 wxSQLite3Database* database = new wxSQLite3Database();
 
 
@@ -130,6 +130,8 @@ InventoryFrame::InventoryFrame(wxWindow* parent,wxWindowID id)
 
     Create(parent, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
     SetClientSize(wxSize(1200,390));
+    SetMinSize(wxSize(1200,390));
+    SetMaxSize(wxSize(1200,390));
     Notebook1 = new wxNotebook(this, ID_NOTEBOOK1, wxPoint(0,0), wxSize(950,450), 0, _T("ID_NOTEBOOK1"));
     Panel1 = new wxPanel(Notebook1, ID_PANEL1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_PANEL1"));
     StaticText3 = new wxStaticText(Panel1, ID_STATICTEXT13, _("1. CATEGORY"), wxPoint(24,24), wxDefaultSize, 0, _T("ID_STATICTEXT13"));
@@ -217,6 +219,7 @@ InventoryFrame::InventoryFrame(wxWindow* parent,wxWindowID id)
     Timer1.Start(1000, true);
     FileDialog1 = new wxFileDialog(this, _("Select file"), _("$USER"), wxEmptyString, wxFileSelectorDefaultWildcardStr, wxFD_DEFAULT_STYLE|wxFD_CHANGE_DIR, wxDefaultPosition, wxDefaultSize, _T("wxFileDialog"));
     FileDialog2 = new wxFileDialog(this, _("Select file"), wxEmptyString, wxEmptyString, wxFileSelectorDefaultWildcardStr, wxFD_SAVE|wxFD_CHANGE_DIR, wxDefaultPosition, wxDefaultSize, _T("wxFileDialog"));
+    FileDialog3 = new wxFileDialog(this, _("Select file"), wxEmptyString, wxEmptyString, wxFileSelectorDefaultWildcardStr, wxFD_SAVE, wxDefaultPosition, wxDefaultSize, _T("wxFileDialog"));
 
     Connect(ID_COMBOBOX4,wxEVT_COMMAND_COMBOBOX_SELECTED,(wxObjectEventFunction)&InventoryFrame::OnComboBox_SearchCategorySelected);
     Connect(ID_COMBOBOX5,wxEVT_COMMAND_COMBOBOX_SELECTED,(wxObjectEventFunction)&InventoryFrame::OnComboBox_SeardManufacturerSelected);
@@ -234,9 +237,14 @@ InventoryFrame::InventoryFrame(wxWindow* parent,wxWindowID id)
     Connect(ID_TIMER1,wxEVT_TIMER,(wxObjectEventFunction)&InventoryFrame::OnTimer1Trigger);
     //*)
 
-    CreateDatabase(database, filename);
-    UpdateLists(database, filename);
-    SearchLists(database, filename);
+    if (FileDialog3->ShowModal() == wxID_CANCEL) {
+        return;
+    }
+
+    filename = string(FileDialog3->GetPath());
+    CreateDatabase(database, filename.c_str());
+    UpdateLists(database, filename.c_str());
+    SearchLists(database, filename.c_str());
 }
 
 
@@ -256,7 +264,18 @@ void InventoryFrame::OnQuit(wxCommandEvent& event)
 
 void InventoryFrame::OnAbout(wxCommandEvent& event)
 {
-    wxString msg = wxbuildinfo(long_f);
+    char sql[2048];
+    int i = 0;
+
+    database->Open(wxString::FromUTF8(filename));
+    snprintf(sql, 2048, "SELECT * FROM STOCK;");
+    wxSQLite3ResultSet result = database->ExecuteQuery(sql);
+
+    while(result.NextRow()) {
+        i++;
+    }
+    database->Close();
+    wxString msg = "Database: \t\t" + filename + "\nEntries Created: \t" + to_string(i);
     wxMessageBox(msg, _("Welcome to..."));
 }
 
@@ -266,7 +285,7 @@ void InventoryFrame::OnSearchEntryClick(wxCommandEvent& event)
 
 void InventoryFrame::OnAddEntryClick(wxCommandEvent& event)
 {
-    InsertDatabase(database, filename);
+    InsertDatabase(database, filename.c_str());
     StaticText_Notification->SetLabel("Successfully Added!");
     Timer1.Start(3000, true);
     TextCtrl_ItemName->Clear();
@@ -279,7 +298,7 @@ void InventoryFrame::OnAddEntryClick(wxCommandEvent& event)
     TextCtrl_VendorURL->Clear();
     SpinCtrl_Quantity->SetValue(1);
     FileUploadCheck->SetValue(false);
-    UpdateLists(database, filename);
+    UpdateLists(database, filename.c_str());
 }
 
 void InventoryFrame::OnTimer1Trigger(wxTimerEvent& event)
@@ -338,12 +357,11 @@ void InventoryFrame::SearchLists(wxSQLite3Database* db, const char* filename) {
     string Item = (string(ComboBox_Item->GetStringSelection()) == "") ? "" : "AND ItemName = '" + string(ComboBox_Item->GetStringSelection()) + "'";
     snprintf(sql, 2048, "SELECT * FROM STOCK %s %s %s %s;", Category.c_str(), Manufacturer.c_str(), Vendor.c_str(), Item.c_str());
 
-
     wxSQLite3ResultSet result = db->ExecuteQuery(sql);
     Select_Grid->ClearGrid();
     (Select_Grid->GetNumberRows() > 1) ? Select_Grid->DeleteRows(0, Select_Grid->GetNumberRows()) : Select_Grid->GetNumberRows();
-    int i = 0;
-    while (result.NextRow()) {
+
+    for (int i = 0; result.NextRow(); i++) {
         Select_Grid->AppendRows(1);
         Select_Grid->SetCellValue(i, 0, wxString::Format(_("%s"), result.GetAsString(0)));
         Select_Grid->SetCellValue(i, 1, wxString::Format(_("%s"), result.GetAsString(2)));
@@ -353,11 +371,9 @@ void InventoryFrame::SearchLists(wxSQLite3Database* db, const char* filename) {
         Select_Grid->SetCellValue(i, 5, wxString::Format(_("%s"), result.GetAsString(6)));
         Select_Grid->SetCellValue(i, 6, wxString::Format(_("%s"), result.GetAsString(7)));
         Select_Grid->SetCellValue(i, 7, wxString::Format(_("%s"), result.GetAsString(8)));
-        i++;
     }
     result.Finalize();
     db->Close();
-
 }
 
 void InventoryFrame::UpdateLists(wxSQLite3Database* db, const char* filename) {
@@ -388,7 +404,6 @@ void InventoryFrame::UpdateLists(wxSQLite3Database* db, const char* filename) {
     while (result.NextRow()) {
             ComboBox_Manufacturer->Append(_(wxString::Format(_("%s"), result.GetAsString(0))));
     }
-
     db->Close();
 }
 
@@ -422,13 +437,13 @@ void InventoryFrame::OnFileUploadCheckClick(wxCommandEvent& event)
 
 void InventoryFrame::OnComboBox_SearchCategorySelected(wxCommandEvent& event)
 {
-    SearchLists(database, filename);
+    SearchLists(database, filename.c_str());
     Button2->Disable();
     Button1->Disable();
     HyperlinkCtrl2->Disable();
     HyperlinkCtrl1->Disable();
     char sql[1024];
-    database->Open(wxString::FromUTF8(filename));
+    database->Open(wxString::FromUTF8(filename.c_str()));
     snprintf(sql, 1024, "SELECT DISTINCT Manufacturer FROM STOCK WHERE Category = '%s';", string(ComboBox_SearchCategory->GetStringSelection()).c_str());
     wxSQLite3ResultSet result = database->ExecuteQuery(sql);
     ComboBox_SeardManufacturer->Clear();
@@ -443,13 +458,13 @@ void InventoryFrame::OnComboBox_SearchCategorySelected(wxCommandEvent& event)
 
 void InventoryFrame::OnComboBox_SeardManufacturerSelected(wxCommandEvent& event)
 {
-    SearchLists(database, filename);
+    SearchLists(database, filename.c_str());
     Button2->Disable();
     Button1->Disable();
     HyperlinkCtrl2->Disable();
     HyperlinkCtrl1->Disable();
     char sql[1024];
-    database->Open(wxString::FromUTF8(filename));
+    database->Open(wxString::FromUTF8(filename.c_str()));
     snprintf(sql, 1024, "SELECT DISTINCT VendorName FROM STOCK WHERE Category = '%s' AND Manufacturer = '%s';", string(ComboBox_SearchCategory->GetStringSelection()).c_str(), string(ComboBox_SeardManufacturer->GetStringSelection()).c_str());
     wxSQLite3ResultSet result = database->ExecuteQuery(sql);
     ComboBox_Vendor->Clear();
@@ -466,9 +481,9 @@ void InventoryFrame::OnComboBox_VendorSelected(wxCommandEvent& event)
     Button1->Disable();
     HyperlinkCtrl2->Disable();
     HyperlinkCtrl1->Disable();
-    SearchLists(database, filename);
+    SearchLists(database, filename.c_str());
     char sql[1024];
-    database->Open(wxString::FromUTF8(filename));
+    database->Open(wxString::FromUTF8(filename.c_str()));
     snprintf(sql, 1024, "SELECT DISTINCT ItemName FROM STOCK WHERE Category = '%s' AND Manufacturer = '%s' AND VendorName = '%s';",string(ComboBox_SearchCategory->GetStringSelection()).c_str(), string(ComboBox_SeardManufacturer->GetStringSelection()).c_str(), string(ComboBox_Vendor->GetStringSelection()).c_str());
     wxSQLite3ResultSet result = database->ExecuteQuery(sql);
     ComboBox_Item->Clear();
@@ -480,9 +495,9 @@ void InventoryFrame::OnComboBox_VendorSelected(wxCommandEvent& event)
 
 void InventoryFrame::OnComboBox_ItemSelected(wxCommandEvent& event)
 {
-    SearchLists(database, filename);
+    SearchLists(database, filename.c_str());
     char sql[1024];
-    database->Open(wxString::FromUTF8(filename));
+    database->Open(wxString::FromUTF8(filename.c_str()));
     snprintf(sql, 2048, "SELECT * FROM STOCK WHERE Category = '%s' AND Manufacturer = '%s' AND VendorName = '%s' AND ItemName = '%s';",string(ComboBox_SearchCategory->GetStringSelection()).c_str(), string(ComboBox_SeardManufacturer->GetStringSelection()).c_str(), string(ComboBox_Vendor->GetStringSelection()).c_str(), string(ComboBox_Item->GetStringSelection()).c_str());
     wxSQLite3ResultSet result = database->ExecuteQuery(sql);
     HyperlinkCtrl2->Enable();
@@ -494,7 +509,6 @@ void InventoryFrame::OnComboBox_ItemSelected(wxCommandEvent& event)
     database->Close();
 }
 
-
 void InventoryFrame::OnHyperlinkCtrl2Click(wxCommandEvent& event)
 {
 }
@@ -502,25 +516,25 @@ void InventoryFrame::OnHyperlinkCtrl2Click(wxCommandEvent& event)
 void InventoryFrame::OnButton1Click1(wxCommandEvent& event)
 {
     char sql[2048];
-    database->Open(wxString::FromUTF8(filename));
+    database->Open(wxString::FromUTF8(filename.c_str()));
     snprintf(sql, 2048, "SELECT * FROM STOCK WHERE Category = '%s' AND Manufacturer = '%s' AND VendorName = '%s' AND ItemName = '%s';",string(ComboBox_SearchCategory->GetStringSelection()).c_str(), string(ComboBox_SeardManufacturer->GetStringSelection()).c_str(), string(ComboBox_Vendor->GetStringSelection()).c_str(), string(ComboBox_Item->GetStringSelection()).c_str());
     wxSQLite3ResultSet result = database->ExecuteQuery(sql);
     int qty = atoi(wxString::Format(_("%d"), result.GetInt(8)).c_str()) + 1;
     snprintf(sql, 2048, "UPDATE STOCK SET Quantity =  %d WHERE Category = '%s' AND Manufacturer = '%s' AND VendorName = '%s' AND ItemName = '%s';", qty, string(ComboBox_SearchCategory->GetStringSelection()).c_str(), string(ComboBox_SeardManufacturer->GetStringSelection()).c_str(), string(ComboBox_Vendor->GetStringSelection()).c_str(), string(ComboBox_Item->GetStringSelection()).c_str());
     database->ExecuteUpdate(sql);
     database->Close();
-    SearchLists(database, filename);
+    SearchLists(database, filename.c_str());
 }
 
 void InventoryFrame::OnButton2Click1(wxCommandEvent& event)
 {
     char sql[2048];
-    database->Open(wxString::FromUTF8(filename));
+    database->Open(wxString::FromUTF8(filename.c_str()));
     snprintf(sql, 2048, "SELECT * FROM STOCK WHERE Category = '%s' AND Manufacturer = '%s' AND VendorName = '%s' AND ItemName = '%s';",string(ComboBox_SearchCategory->GetStringSelection()).c_str(), string(ComboBox_SeardManufacturer->GetStringSelection()).c_str(), string(ComboBox_Vendor->GetStringSelection()).c_str(), string(ComboBox_Item->GetStringSelection()).c_str());
     wxSQLite3ResultSet result = database->ExecuteQuery(sql);
     int qty = atoi(wxString::Format(_("%d"), result.GetInt(8)).c_str()) - 1;
     snprintf(sql, 2048, "UPDATE STOCK SET Quantity =  %d WHERE Category = '%s' AND Manufacturer = '%s' AND VendorName = '%s' AND ItemName = '%s';", qty, string(ComboBox_SearchCategory->GetStringSelection()).c_str(), string(ComboBox_SeardManufacturer->GetStringSelection()).c_str(), string(ComboBox_Vendor->GetStringSelection()).c_str(), string(ComboBox_Item->GetStringSelection()).c_str());
     database->ExecuteUpdate(sql);
     database->Close();
-    SearchLists(database, filename);
+    SearchLists(database, filename.c_str());
 }

@@ -137,6 +137,7 @@ class InventoryFrame: public wxFrame
         wxComboBox* ComboBox_Vendor;
         wxFileDialog* FileDialog1;
         wxFileDialog* FileDialog2;
+        wxFileDialog* FileDialog3;
         wxGrid* Select_Grid;
         wxHyperlinkCtrl* HyperlinkCtrl1;
         wxHyperlinkCtrl* HyperlinkCtrl2;
