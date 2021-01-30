@@ -179,6 +179,6 @@ class InventoryFrame: public wxFrame
 };
 
 bool check_digit(std::string my_digit) ;
-
+std::string sql_item_query(std::string category, std::string manufacturer, std::string vendor, std::string item);
 
 #endif // INVENTORYMAIN_H

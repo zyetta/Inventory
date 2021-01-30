@@ -10,12 +10,12 @@
 //================== Included Libraries ==================
 
 #include <wx/msgdlg.h>
-#include <iostream>
 #include <wx/wx.h>
 #include <wx/intl.h>
 #include <wx/string.h>
 #include <wx/wxsqlite3.h>
 #include "InventoryMain.h"
+#include <iostream>
 #include <string>
 #include <time.h>
 using namespace std;
@@ -116,8 +116,6 @@ BEGIN_EVENT_TABLE(InventoryFrame,wxFrame)
 END_EVENT_TABLE()
 
 //================== Class Constructor ==================
-
-
 
 InventoryFrame::InventoryFrame(wxWindow* parent,wxWindowID id)
 {
@@ -247,8 +245,6 @@ InventoryFrame::InventoryFrame(wxWindow* parent,wxWindowID id)
     SearchLists(database, filename.c_str());
 }
 
-
-
 InventoryFrame::~InventoryFrame()
 {
     //(*Destroy(InventoryFrame)
@@ -348,16 +344,13 @@ void InventoryFrame::InsertDatabase(wxSQLite3Database* db, const char* filename)
 }
 
 void InventoryFrame::SearchLists(wxSQLite3Database* db, const char* filename) {
-    char sql[2048];
+
+
     db->Open(wxString::FromUTF8(filename));
+    string sql_query = sql_item_query(string(ComboBox_SearchCategory->GetStringSelection()), string(ComboBox_SeardManufacturer->GetStringSelection()), string(ComboBox_Vendor->GetStringSelection()), string(ComboBox_Item->GetStringSelection()));
 
-    string Category = (string(ComboBox_SearchCategory->GetStringSelection()) == "") ? "" : "WHERE Category = '" + string(ComboBox_SearchCategory->GetStringSelection()) + "'";
-    string Manufacturer = (string(ComboBox_SeardManufacturer->GetStringSelection()) == "") ? "" : "AND Manufacturer = '" + string(ComboBox_SeardManufacturer->GetStringSelection()) + "'";
-    string Vendor = (string(ComboBox_Vendor->GetStringSelection()) == "") ? "" : "AND VendorName = '" + string(ComboBox_Vendor->GetStringSelection()) + "'";
-    string Item = (string(ComboBox_Item->GetStringSelection()) == "") ? "" : "AND ItemName = '" + string(ComboBox_Item->GetStringSelection()) + "'";
-    snprintf(sql, 2048, "SELECT * FROM STOCK %s %s %s %s;", Category.c_str(), Manufacturer.c_str(), Vendor.c_str(), Item.c_str());
 
-    wxSQLite3ResultSet result = db->ExecuteQuery(sql);
+    wxSQLite3ResultSet result = db->ExecuteQuery(sql_query.c_str());
     Select_Grid->ClearGrid();
     (Select_Grid->GetNumberRows() > 1) ? Select_Grid->DeleteRows(0, Select_Grid->GetNumberRows()) : Select_Grid->GetNumberRows();
 
@@ -374,6 +367,30 @@ void InventoryFrame::SearchLists(wxSQLite3Database* db, const char* filename) {
     }
     result.Finalize();
     db->Close();
+}
+
+std::string sql_item_query(std::string category, std::string manufacturer, std::string vendor, std::string item) {
+    string sql = "SELECT * FROM STOCK ";
+    bool key = false;
+
+    if (category != "") {
+        sql += (!key) ? key = true, " WHERE " : " AND ";
+        sql += "Category = '" + category + "'";
+    }
+    if (manufacturer != "") {
+        sql += (!key) ? key = true, " WHERE " : " AND ";
+        sql += "Manufacturer = '" + manufacturer + "'";
+    }
+    if (vendor != "") {
+        sql += (!key) ? key = true, " WHERE " : " AND ";
+        sql += "VendorName = '" + vendor + "'";
+    }
+    if (item != "") {
+        sql += (!key) ? key = true, " WHERE " : " AND ";
+        sql += "ItemName = '" + item + "'";
+    }
+    sql += ";";
+    return sql;
 }
 
 void InventoryFrame::UpdateLists(wxSQLite3Database* db, const char* filename) {
