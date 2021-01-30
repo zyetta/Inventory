@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <wxsmith>
 	<object class="wxFrame" name="InventoryFrame">
-		<size>1200,390</size>
-		<minsize>1200,390</minsize>
-		<maxsize>1200,390</maxsize>
+		<size>1200,430</size>
+		<minsize>1200,430</minsize>
+		<maxsize>1200,430</maxsize>
 		<id_arg>0</id_arg>
 		<object class="wxNotebook" name="ID_NOTEBOOK1" variable="Notebook1" member="yes">
 			<pos>0,0</pos>
@@ -223,7 +223,7 @@
 					</object>
 					<object class="wxStaticText" name="ID_STATICTEXT12" variable="StaticText2" member="yes">
 						<label></label>
-						<pos>384,264</pos>
+						<pos>408,264</pos>
 						<size>64,16</size>
 					</object>
 					<object class="wxComboBox" name="ID_COMBOBOX2" variable="ComboBox_Manufacturer" member="yes">
@@ -246,6 +246,10 @@
 		<object class="wxMenuBar" variable="MenuBar1" member="no">
 			<object class="wxMenu" variable="Menu1" member="no">
 				<label>&amp;File</label>
+				<object class="wxMenuItem" name="ID_MENUITEM1" variable="MenuItem3" member="yes">
+					<label>Database</label>
+				</object>
+				<object class="separator" />
 				<object class="wxMenuItem" name="idMenuQuit" variable="MenuItem1" member="no">
 					<label>Quit</label>
 					<accel>Alt-F4</accel>
@@ -279,7 +283,14 @@
 		</object>
 		<object class="wxFileDialog" variable="FileDialog3" member="yes">
 			<message>Select file</message>
+			<default_dir>./</default_dir>
+			<default_file>data.db</default_file>
 			<style>wxFD_SAVE</style>
+		</object>
+		<object class="wxMessageDialog" name="ID_MESSAGEDIALOG1" variable="MessageDialog1" member="yes">
+			<caption>Message</caption>
+			<message>Select Database &#x0A;Menu-&gt;File -&gt; Database</message>
+			<style>wxOK</style>
 		</object>
 	</object>
 </wxsmith>

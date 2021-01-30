@@ -27,8 +27,7 @@ using namespace std;
 enum wxbuildinfoformat {
     short_f, long_f };
 
-wxString wxbuildinfo(wxbuildinfoformat format)
-{
+wxString wxbuildinfo(wxbuildinfoformat format) {
     wxString wxbuild(wxVERSION_STRING);
 
     if (format == long_f )
@@ -54,7 +53,6 @@ wxString wxbuildinfo(wxbuildinfoformat format)
 
 string filename = "data.db";
 wxSQLite3Database* database = new wxSQLite3Database();
-
 
 //(*IdInit(InventoryFrame)
 const long InventoryFrame::ID_STATICTEXT13 = wxNewId();
@@ -103,12 +101,12 @@ const long InventoryFrame::ID_COMBOBOX3 = wxNewId();
 const long InventoryFrame::ID_CHECKBOX1 = wxNewId();
 const long InventoryFrame::ID_PANEL3 = wxNewId();
 const long InventoryFrame::ID_NOTEBOOK1 = wxNewId();
+const long InventoryFrame::ID_MENUITEM1 = wxNewId();
 const long InventoryFrame::idMenuQuit = wxNewId();
 const long InventoryFrame::idMenuAbout = wxNewId();
 const long InventoryFrame::ID_TIMER1 = wxNewId();
+const long InventoryFrame::ID_MESSAGEDIALOG1 = wxNewId();
 //*)
-
-
 
 BEGIN_EVENT_TABLE(InventoryFrame,wxFrame)
     //(*EventTable(InventoryFrame)
@@ -117,8 +115,7 @@ END_EVENT_TABLE()
 
 //================== Class Constructor ==================
 
-InventoryFrame::InventoryFrame(wxWindow* parent,wxWindowID id)
-{
+InventoryFrame::InventoryFrame(wxWindow* parent,wxWindowID id) {
     //(*Initialize(InventoryFrame)
     wxMenu* Menu1;
     wxMenu* Menu2;
@@ -127,9 +124,9 @@ InventoryFrame::InventoryFrame(wxWindow* parent,wxWindowID id)
     wxMenuItem* MenuItem2;
 
     Create(parent, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
-    SetClientSize(wxSize(1200,390));
-    SetMinSize(wxSize(1200,390));
-    SetMaxSize(wxSize(1200,390));
+    SetClientSize(wxSize(1200,430));
+    SetMinSize(wxSize(1200,430));
+    SetMaxSize(wxSize(1200,430));
     Notebook1 = new wxNotebook(this, ID_NOTEBOOK1, wxPoint(0,0), wxSize(950,450), 0, _T("ID_NOTEBOOK1"));
     Panel1 = new wxPanel(Notebook1, ID_PANEL1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_PANEL1"));
     StaticText3 = new wxStaticText(Panel1, ID_STATICTEXT13, _("1. CATEGORY"), wxPoint(24,24), wxDefaultSize, 0, _T("ID_STATICTEXT13"));
@@ -196,7 +193,7 @@ InventoryFrame::InventoryFrame(wxWindow* parent,wxWindowID id)
     StaticText1 = new wxStaticText(Panel3, ID_STATICTEXT11, _("DATASHEET"), wxPoint(176,264), wxDefaultSize, 0, _T("ID_STATICTEXT11"));
     Button_UploadDatasheet = new wxButton(Panel3, ID_BUTTON2, _("Upload File"), wxPoint(288,256), wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON2"));
     Button_UploadDatasheet->Disable();
-    StaticText2 = new wxStaticText(Panel3, ID_STATICTEXT12, wxEmptyString, wxPoint(384,264), wxSize(64,16), 0, _T("ID_STATICTEXT12"));
+    StaticText2 = new wxStaticText(Panel3, ID_STATICTEXT12, wxEmptyString, wxPoint(408,264), wxSize(64,16), 0, _T("ID_STATICTEXT12"));
     ComboBox_Manufacturer = new wxComboBox(Panel3, ID_COMBOBOX2, wxEmptyString, wxPoint(184,136), wxSize(376,34), 0, 0, 0, wxDefaultValidator, _T("ID_COMBOBOX2"));
     ComboBox_VenderName = new wxComboBox(Panel3, ID_COMBOBOX3, wxEmptyString, wxPoint(784,40), wxSize(376,34), 0, 0, 0, wxDefaultValidator, _T("ID_COMBOBOX3"));
     FileUploadCheck = new wxCheckBox(Panel3, ID_CHECKBOX1, wxEmptyString, wxPoint(264,264), wxSize(24,22), 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
@@ -205,6 +202,9 @@ InventoryFrame::InventoryFrame(wxWindow* parent,wxWindowID id)
     Notebook1->AddPage(Panel3, _("ADD ITEMS"), false);
     MenuBar1 = new wxMenuBar();
     Menu1 = new wxMenu();
+    MenuItem3 = new wxMenuItem(Menu1, ID_MENUITEM1, _("Database"), wxEmptyString, wxITEM_NORMAL);
+    Menu1->Append(MenuItem3);
+    Menu1->AppendSeparator();
     MenuItem1 = new wxMenuItem(Menu1, idMenuQuit, _("Quit\tAlt-F4"), _("Quit the application"), wxITEM_NORMAL);
     Menu1->Append(MenuItem1);
     MenuBar1->Append(Menu1, _("&File"));
@@ -217,7 +217,8 @@ InventoryFrame::InventoryFrame(wxWindow* parent,wxWindowID id)
     Timer1.Start(1000, true);
     FileDialog1 = new wxFileDialog(this, _("Select file"), _("$USER"), wxEmptyString, wxFileSelectorDefaultWildcardStr, wxFD_DEFAULT_STYLE|wxFD_CHANGE_DIR, wxDefaultPosition, wxDefaultSize, _T("wxFileDialog"));
     FileDialog2 = new wxFileDialog(this, _("Select file"), wxEmptyString, wxEmptyString, wxFileSelectorDefaultWildcardStr, wxFD_SAVE|wxFD_CHANGE_DIR, wxDefaultPosition, wxDefaultSize, _T("wxFileDialog"));
-    FileDialog3 = new wxFileDialog(this, _("Select file"), wxEmptyString, wxEmptyString, wxFileSelectorDefaultWildcardStr, wxFD_SAVE, wxDefaultPosition, wxDefaultSize, _T("wxFileDialog"));
+    FileDialog3 = new wxFileDialog(this, _("Select file"), _("./"), _("data.db"), wxFileSelectorDefaultWildcardStr, wxFD_SAVE, wxDefaultPosition, wxDefaultSize, _T("wxFileDialog"));
+    MessageDialog1 = new wxMessageDialog(this, _("Select Database \nMenu->File -> Database"), _("Message"), wxOK, wxDefaultPosition);
 
     Connect(ID_COMBOBOX4,wxEVT_COMMAND_COMBOBOX_SELECTED,(wxObjectEventFunction)&InventoryFrame::OnComboBox_SearchCategorySelected);
     Connect(ID_COMBOBOX5,wxEVT_COMMAND_COMBOBOX_SELECTED,(wxObjectEventFunction)&InventoryFrame::OnComboBox_SeardManufacturerSelected);
@@ -234,32 +235,35 @@ InventoryFrame::InventoryFrame(wxWindow* parent,wxWindowID id)
     Connect(idMenuAbout,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&InventoryFrame::OnAbout);
     Connect(ID_TIMER1,wxEVT_TIMER,(wxObjectEventFunction)&InventoryFrame::OnTimer1Trigger);
     //*)
+    Connect(ID_MENUITEM1,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&InventoryFrame::SelectDatabase);
 
+    MessageDialog1->ShowModal();
+    CreateDatabase(database, filename.c_str());
+    UpdateLists(database, filename.c_str());
+    SearchLists(database, filename.c_str());
+}
+
+InventoryFrame::~InventoryFrame() {
+    //(*Destroy(InventoryFrame)
+    //*)
+}
+
+//================== Event Handlers ==================
+void InventoryFrame::SelectDatabase(wxCommandEvent& event) {
     if (FileDialog3->ShowModal() == wxID_CANCEL) {
         return;
     }
-
     filename = string(FileDialog3->GetPath());
     CreateDatabase(database, filename.c_str());
     UpdateLists(database, filename.c_str());
     SearchLists(database, filename.c_str());
 }
 
-InventoryFrame::~InventoryFrame()
-{
-    //(*Destroy(InventoryFrame)
-    //*)
-}
-
-
-//================== Event Handlers ==================
-void InventoryFrame::OnQuit(wxCommandEvent& event)
-{
+void InventoryFrame::OnQuit(wxCommandEvent& event) {
     Close();
 }
 
-void InventoryFrame::OnAbout(wxCommandEvent& event)
-{
+void InventoryFrame::OnAbout(wxCommandEvent& event) {
     char sql[2048];
     int i = 0;
 
@@ -275,12 +279,10 @@ void InventoryFrame::OnAbout(wxCommandEvent& event)
     wxMessageBox(msg, _("Welcome to..."));
 }
 
-void InventoryFrame::OnSearchEntryClick(wxCommandEvent& event)
-{
+void InventoryFrame::OnSearchEntryClick(wxCommandEvent& event) {
 }
 
-void InventoryFrame::OnAddEntryClick(wxCommandEvent& event)
-{
+void InventoryFrame::OnAddEntryClick(wxCommandEvent& event) {
     InsertDatabase(database, filename.c_str());
     StaticText_Notification->SetLabel("Successfully Added!");
     Timer1.Start(3000, true);
@@ -297,16 +299,12 @@ void InventoryFrame::OnAddEntryClick(wxCommandEvent& event)
     UpdateLists(database, filename.c_str());
 }
 
-void InventoryFrame::OnTimer1Trigger(wxTimerEvent& event)
-{
+void InventoryFrame::OnTimer1Trigger(wxTimerEvent& event) {
     StaticText_Notification->SetLabel("");
 }
 
-void InventoryFrame::OnComboBox_CategorySelected(wxCommandEvent& event)
-{
+void InventoryFrame::OnComboBox_CategorySelected(wxCommandEvent& event) {
 }
-
-//================== User Functions ==================
 
 void InventoryFrame::CreateDatabase(wxSQLite3Database* db, const char* filename) {
     const char *sql = "CREATE TABLE Stock(ItemName varchar(30), ItemDescription varchar(100), Manufacturer varchar(30), Category varchar(30), "
@@ -344,8 +342,6 @@ void InventoryFrame::InsertDatabase(wxSQLite3Database* db, const char* filename)
 }
 
 void InventoryFrame::SearchLists(wxSQLite3Database* db, const char* filename) {
-
-
     db->Open(wxString::FromUTF8(filename));
     string sql_query = sql_item_query(string(ComboBox_SearchCategory->GetStringSelection()), string(ComboBox_SeardManufacturer->GetStringSelection()), string(ComboBox_Vendor->GetStringSelection()), string(ComboBox_Item->GetStringSelection()));
 
@@ -367,30 +363,6 @@ void InventoryFrame::SearchLists(wxSQLite3Database* db, const char* filename) {
     }
     result.Finalize();
     db->Close();
-}
-
-std::string sql_item_query(std::string category, std::string manufacturer, std::string vendor, std::string item) {
-    string sql = "SELECT * FROM STOCK ";
-    bool key = false;
-
-    if (category != "") {
-        sql += (!key) ? key = true, " WHERE " : " AND ";
-        sql += "Category = '" + category + "'";
-    }
-    if (manufacturer != "") {
-        sql += (!key) ? key = true, " WHERE " : " AND ";
-        sql += "Manufacturer = '" + manufacturer + "'";
-    }
-    if (vendor != "") {
-        sql += (!key) ? key = true, " WHERE " : " AND ";
-        sql += "VendorName = '" + vendor + "'";
-    }
-    if (item != "") {
-        sql += (!key) ? key = true, " WHERE " : " AND ";
-        sql += "ItemName = '" + item + "'";
-    }
-    sql += ";";
-    return sql;
 }
 
 void InventoryFrame::UpdateLists(wxSQLite3Database* db, const char* filename) {
@@ -424,36 +396,21 @@ void InventoryFrame::UpdateLists(wxSQLite3Database* db, const char* filename) {
     db->Close();
 }
 
-bool check_digit(string my_digit) {
-    bool flag = 1;
-    for (unsigned int i = 0; i < sizeof(my_digit) / sizeof(string); i++) {
-            if(!isdigit(my_digit[i]) ) {
-                flag = 0;
-                break;
-            }
-    }
-    return flag;
-}
-
-void InventoryFrame::OnButton_UploadDatasheetClick(wxCommandEvent& event)
-{
+void InventoryFrame::OnButton_UploadDatasheetClick(wxCommandEvent& event) {
     if (FileDialog1->ShowModal() == wxID_CANCEL) {
         return;
     }
     StaticText2->SetLabel(FileDialog1->GetFilename());
 }
 
-void InventoryFrame::OnTextCtrl_ManufacturerText(wxCommandEvent& event)
-{
+void InventoryFrame::OnTextCtrl_ManufacturerText(wxCommandEvent& event) {
 }
 
-void InventoryFrame::OnFileUploadCheckClick(wxCommandEvent& event)
-{
+void InventoryFrame::OnFileUploadCheckClick(wxCommandEvent& event) {
     (FileUploadCheck->GetValue()) ? Button_UploadDatasheet->Enable() : Button_UploadDatasheet->Disable();
 }
 
-void InventoryFrame::OnComboBox_SearchCategorySelected(wxCommandEvent& event)
-{
+void InventoryFrame::OnComboBox_SearchCategorySelected(wxCommandEvent& event) {
     SearchLists(database, filename.c_str());
     Button2->Disable();
     Button1->Disable();
@@ -473,8 +430,7 @@ void InventoryFrame::OnComboBox_SearchCategorySelected(wxCommandEvent& event)
     database->Close();
 }
 
-void InventoryFrame::OnComboBox_SeardManufacturerSelected(wxCommandEvent& event)
-{
+void InventoryFrame::OnComboBox_SeardManufacturerSelected(wxCommandEvent& event) {
     SearchLists(database, filename.c_str());
     Button2->Disable();
     Button1->Disable();
@@ -492,8 +448,7 @@ void InventoryFrame::OnComboBox_SeardManufacturerSelected(wxCommandEvent& event)
     database->Close();
 }
 
-void InventoryFrame::OnComboBox_VendorSelected(wxCommandEvent& event)
-{
+void InventoryFrame::OnComboBox_VendorSelected(wxCommandEvent& event) {
     Button2->Disable();
     Button1->Disable();
     HyperlinkCtrl2->Disable();
@@ -510,8 +465,7 @@ void InventoryFrame::OnComboBox_VendorSelected(wxCommandEvent& event)
     database->Close();
 }
 
-void InventoryFrame::OnComboBox_ItemSelected(wxCommandEvent& event)
-{
+void InventoryFrame::OnComboBox_ItemSelected(wxCommandEvent& event) {
     SearchLists(database, filename.c_str());
     char sql[1024];
     database->Open(wxString::FromUTF8(filename.c_str()));
@@ -526,12 +480,10 @@ void InventoryFrame::OnComboBox_ItemSelected(wxCommandEvent& event)
     database->Close();
 }
 
-void InventoryFrame::OnHyperlinkCtrl2Click(wxCommandEvent& event)
-{
+void InventoryFrame::OnHyperlinkCtrl2Click(wxCommandEvent& event) {
 }
 
-void InventoryFrame::OnButton1Click1(wxCommandEvent& event)
-{
+void InventoryFrame::OnButton1Click1(wxCommandEvent& event) {
     char sql[2048];
     database->Open(wxString::FromUTF8(filename.c_str()));
     snprintf(sql, 2048, "SELECT * FROM STOCK WHERE Category = '%s' AND Manufacturer = '%s' AND VendorName = '%s' AND ItemName = '%s';",string(ComboBox_SearchCategory->GetStringSelection()).c_str(), string(ComboBox_SeardManufacturer->GetStringSelection()).c_str(), string(ComboBox_Vendor->GetStringSelection()).c_str(), string(ComboBox_Item->GetStringSelection()).c_str());
@@ -543,8 +495,7 @@ void InventoryFrame::OnButton1Click1(wxCommandEvent& event)
     SearchLists(database, filename.c_str());
 }
 
-void InventoryFrame::OnButton2Click1(wxCommandEvent& event)
-{
+void InventoryFrame::OnButton2Click1(wxCommandEvent& event) {
     char sql[2048];
     database->Open(wxString::FromUTF8(filename.c_str()));
     snprintf(sql, 2048, "SELECT * FROM STOCK WHERE Category = '%s' AND Manufacturer = '%s' AND VendorName = '%s' AND ItemName = '%s';",string(ComboBox_SearchCategory->GetStringSelection()).c_str(), string(ComboBox_SeardManufacturer->GetStringSelection()).c_str(), string(ComboBox_Vendor->GetStringSelection()).c_str(), string(ComboBox_Item->GetStringSelection()).c_str());
@@ -554,4 +505,41 @@ void InventoryFrame::OnButton2Click1(wxCommandEvent& event)
     database->ExecuteUpdate(sql);
     database->Close();
     SearchLists(database, filename.c_str());
+}
+
+//================== User Functions ==================
+
+std::string sql_item_query(std::string category, std::string manufacturer, std::string vendor, std::string item) {
+    string sql = "SELECT * FROM STOCK ";
+    bool key = false;
+
+    if (category != "") {
+        sql += (!key) ? key = true, " WHERE " : " AND ";
+        sql += "Category = '" + category + "'";
+    }
+    if (manufacturer != "") {
+        sql += (!key) ? key = true, " WHERE " : " AND ";
+        sql += "Manufacturer = '" + manufacturer + "'";
+    }
+    if (vendor != "") {
+        sql += (!key) ? key = true, " WHERE " : " AND ";
+        sql += "VendorName = '" + vendor + "'";
+    }
+    if (item != "") {
+        sql += (!key) ? key = true, " WHERE " : " AND ";
+        sql += "ItemName = '" + item + "'";
+    }
+    sql += ";";
+    return sql;
+}
+
+bool check_digit(string my_digit) {
+    bool flag = 1;
+    for (unsigned int i = 0; i < sizeof(my_digit) / sizeof(string); i++) {
+            if(!isdigit(my_digit[i]) ) {
+                flag = 0;
+                break;
+            }
+    }
+    return flag;
 }
